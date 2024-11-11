@@ -1,1 +1,13 @@
-# AppCalculadora
+## App de calculadora
+
+Elaborar la interfaz y el control del estado para una aplicación sencilla de pantalla única que cuente con una calculadora. 
+
+Se pueden añadir tantas posibles operaciones matemáticas como se quieran. 
+
+- Operaciones básicas: suma, resta, multiplicación, división, división entera, resto de la división entera.
+
+- Otras operaciones: potencia, logaritmo neperiano, logaritmo para base elegida, raíz cuadrada, raíz para cualquier radical.
+
+- Operaciones trigonométricas: seno, coseno, tangente, arcoseno, arcocoseno, arcotangente. 
+
+Y todas las que se os ocurran y queráis implementar.
