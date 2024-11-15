@@ -34,6 +34,11 @@ fun CalculatorScreen() {
         "0", ".", "=", "+"
     )
 
+    // Lista de botones de operaciones científicas avanzadas
+    val advancedButtons = listOf(
+        "sin", "cos", "tan", "ln", "√", "asin", "acos", "atan", "e"
+    )
+
     // Fila para los botones de operaciones básicas y números
     Column(
         modifier = Modifier
@@ -60,49 +65,59 @@ fun CalculatorScreen() {
                                 input += label
                             }
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)  // Esto asegura que los botones tengan el mismo tamaño
+                            .height(60.dp)  // Ajustamos la altura de los botones para que sean más grandes
                     ) {
-                        Text(text = label)
+                        Text(text = label, fontSize = 20.sp)
                     }
                 }
             }
         }
 
-        // Fila para botones de operaciones avanzadas
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf("sin", "cos", "tan", "ln", "√").forEach { label ->
-                Button(
-                    onClick = { input += "$label(" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = label)
+        // Fila para los botones avanzados (sin, cos, tan, ln, √, etc.)
+        for (i in advancedButtons.chunked(5)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                i.forEach { label ->
+                    Button(
+                        onClick = {
+                            when (label) {
+                                "π" -> input += Math.PI.toString()  // Aquí reemplazamos "π" por el valor numérico de π
+                                else -> {
+                                    // Si ya hay un número en la entrada, agregamos la función con paréntesis
+                                    if (input.isNotEmpty() && input.last().isDigit()) {
+                                        input = "$label(${input.takeLastWhile { it.isDigit() }})"
+                                        input = input.dropLastWhile { it.isDigit() }
+                                    } else {
+                                        // Si no hay un número al final, agregamos la función con paréntesis abierto
+                                        input += "$label("
+                                    }
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)  // Asegura que todos los botones ocupen un espacio igual
+                            .height(60.dp)  // Establecemos la misma altura para todos los botones
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 16.sp,  // Ajustamos el tamaño del texto para que se vea bien en cada botón
+                            maxLines = 1  // Aseguramos que el texto no se divida en más de una línea
+                        )
+                    }
                 }
             }
         }
 
-        // Fila para botones de operaciones trigonométricas inversas
+        // Fila para los botones "AC" y "^" (colocándolos juntos en una fila)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            listOf("asin", "acos", "atan").forEach { label ->
-                Button(
-                    onClick = { input += "$label(" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = label)
-                }
-            }
-        }
-
-        // Botón AC centrado y más pequeño
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
+            // Botón AC
             Button(
                 onClick = {
                     input = ""
@@ -110,9 +125,21 @@ fun CalculatorScreen() {
                 },
                 modifier = Modifier
                     .width(80.dp)
-                    .height(50.dp)
+                    .height(60.dp)
             ) {
-                Text(text = "AC")
+                Text(text = "AC", fontSize = 20.sp)
+            }
+
+            // Botón ^ (añadido al lado de AC)
+            Button(
+                onClick = {
+                    input += "^"  // Agregar el símbolo ^ al input cuando el usuario lo pulse
+                },
+                modifier = Modifier
+                    .weight(1f)  // Esto asegura que el botón ocupe el mismo espacio que los demás botones
+                    .height(60.dp)  // Establecemos la misma altura para el botón
+            ) {
+                Text(text = "^", fontSize = 20.sp)
             }
         }
     }

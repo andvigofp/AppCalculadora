@@ -12,31 +12,48 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 
 // Función para operaciones básicas como +, -, *, /
-fun calculateBasicOperation(expression: String): Double {
-    val regex = Regex("([-+*/])")
-    val parts = expression.split(regex).filter { it.isNotEmpty() }
-    val operators = expression.filter { "+-*/".contains(it) }
+fun calculateBasicOperation(expression: String): List<String> {
+    // Usamos una expresión regular que maneja números, operadores y posibles espacios en blanco
+    val regex = Regex("""(\d+(\.\d+)?|[-+*/()])""")
+    val tokens = regex.findAll(expression.replace(" ", "")).map { it.value }.toList()
 
-    if (parts.size < 2 || operators.isEmpty()) {
-        throw IllegalArgumentException("Expresión no válida")
-    }
+    if (tokens.isEmpty()) throw IllegalArgumentException("Expresión vacía o no válida")
 
-    var result = parts[0].toDouble()
-    for (i in 1 until parts.size) {
-        val operand = parts[i].toDouble()
-        val operator = operators[i - 1]
+    // Primero se resuelven las operaciones de alta precedencia (*, /)
+    val firstPass = applyOperator(tokens, listOf("*", "/"))
 
-        result = when (operator) {
-            '+' -> result + operand
-            '-' -> result - operand
-            '*' -> result * operand
-            '/' -> {
-                if (operand == 0.0) throw ArithmeticException("División por cero")
-                result / operand
+    // Luego pasamos a la segunda fase de operaciones con menor precedencia (+, -)
+    return applyOperator(firstPass, listOf("+", "-"))
+}
+
+fun applyOperator(tokens: List<String>, operators: List<String>): List<String> {
+    var result = mutableListOf<String>()
+    var i = 0
+
+    // Recorremos los tokens para hacer las operaciones según los operadores pasados
+    while (i < tokens.size) {
+        val token = tokens[i]
+        if (operators.contains(token)) {
+            // Realizamos la operación con el operador encontrado
+            val left = result.removeAt(result.lastIndex).toDouble()
+            val right = tokens[i + 1].toDouble()
+            val operationResult = when (token) {
+                "+" -> left + right
+                "-" -> left - right
+                "*" -> left * right
+                "/" -> {
+                    if (right == 0.0) throw ArithmeticException("División por cero")
+                    left / right
+                }
+                else -> throw IllegalArgumentException("Operador no válido")
             }
-            else -> throw IllegalArgumentException("Operador no válido")
+            result.add(operationResult.toString())
+            i += 2 // Saltamos al siguiente operador
+        } else {
+            // Si el token no es un operador, lo añadimos a la lista de resultados
+            result.add(token)
+            i++
         }
     }
-
     return result
 }

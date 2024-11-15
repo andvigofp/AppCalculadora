@@ -19,13 +19,22 @@ import com.example.appcalculadora.ui.theme.AppCalculadoraTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge()  // Esto habilita el uso del área completa de la pantalla (sin barras de navegación o status bar)
         setContent {
-            MaterialTheme { // Aplica el tema de tu app
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    CalculatorScreen() // Llama a tu función que define la UI de la calculadora
+            AppCalculadoraTheme { // Aplica el tema de la app
+                // Surface es el contenedor principal donde se renderiza el contenido
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    CalculatorScreen() // Llama a la función que define la UI de la calculadora
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    AppCalculadoraTheme {
+        CalculatorScreen() // Previsualización de la pantalla de la calculadora
     }
 }

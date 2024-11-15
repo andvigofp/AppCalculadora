@@ -10,7 +10,7 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 
 fun evaluateExpression(expression: String): Double {
-    // Reemplazar las funciones matemáticas por sus equivalentes
+    // Reemplazar las operaciones matemáticas
     return when {
         expression.contains("sqrt") -> {
             val num = expression.substringAfter("sqrt(").substringBefore(")").toDouble()
@@ -44,8 +44,15 @@ fun evaluateExpression(expression: String): Double {
             val num = expression.substringAfter("atan(").substringBefore(")").toDouble()
             Math.toDegrees(atan(num)) // Convertir a grados
         }
+        expression.contains("**") -> {
+            // Evaluar la potencia (exponente)
+            val parts = expression.split("**")
+            val base = parts[0].toDouble()
+            val exponent = parts[1].toDouble()
+            Math.pow(base, exponent)  // Calculamos la potencia
+        }
         else -> {
-            // Evaluar operaciones matemáticas básicas como suma, resta, multiplicación, y división
+            // Si no contiene ninguna función matemática, evaluamos la operación básica
             val sanitized = expression.replace(" ", "") // Eliminar espacios
             val result = try {
                 evaluateBasicOperation(sanitized)
@@ -55,4 +62,12 @@ fun evaluateExpression(expression: String): Double {
             result
         }
     }
+}
+
+// Función para extraer el argumento de una función matemática, manejando los paréntesis correctamente
+fun extractFunctionArgument(expression: String, function: String): Double {
+    val startIdx = expression.indexOf(function + "(") + function.length + 1
+    val endIdx = expression.indexOf(")", startIdx)
+    val argumentStr = expression.substring(startIdx, endIdx).trim()
+    return argumentStr.toDouble() // Convertir el argumento extraído a un número
 }

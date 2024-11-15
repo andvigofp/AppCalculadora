@@ -16,11 +16,11 @@ fun calculateAdvancedOperation(value: Double, operation: String): Double {
             "sin" -> sin(Math.toRadians(value)) // Convertir a radianes
             "cos" -> cos(Math.toRadians(value)) // Convertir a radianes
             "tan" -> tan(Math.toRadians(value)) // Convertir a radianes
-            "asin" -> Math.toDegrees(asin(value)) // Convertir a grados
-            "acos" -> Math.toDegrees(acos(value)) // Convertir a grados
+            "asin" -> if (value in -1.0..1.0) Math.toDegrees(asin(value)) else throw IllegalArgumentException("asin: el valor debe estar entre -1 y 1")
+            "acos" -> if (value in -1.0..1.0) Math.toDegrees(acos(value)) else throw IllegalArgumentException("acos: el valor debe estar entre -1 y 1")
             "atan" -> Math.toDegrees(atan(value)) // Convertir a grados
-            "√" -> sqrt(value)
-            "ln" -> ln(value)
+            "√" -> if (value >= 0) sqrt(value) else throw IllegalArgumentException("√: el valor debe ser no negativo")
+            "ln" -> if (value > 0) ln(value) else throw IllegalArgumentException("ln: el valor debe ser mayor que 0")
             else -> throw IllegalArgumentException("Operación no válida")
         }
     } catch (e: Exception) {
